@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">GoFileClient</string>
+
+    <string name="upload_file">Upload file</string>
+    <string name="options">Options</string>
+
+    <string name="account_details">Account details</string>
+    <string name="my_files">My files</string>
+    <string name="donate">Donate</string>
+    <string name="contact">Contact</string>
 </resources>
