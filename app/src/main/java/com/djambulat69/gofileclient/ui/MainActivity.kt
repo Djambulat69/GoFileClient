@@ -1,9 +1,11 @@
-package com.djambulat69.gofileclient
+package com.djambulat69.gofileclient.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.ActivityMainBinding
+import com.djambulat69.gofileclient.ui.uploadFile.UploadFileFragment
 
 class MainActivity : AppCompatActivity() {
 

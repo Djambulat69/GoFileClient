@@ -1,10 +1,11 @@
-package com.djambulat69.gofileclient
+package com.djambulat69.gofileclient.ui.uploadFile
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.djambulat69.gofileclient.R
 
 class UploadFileFragment : Fragment() {
 
