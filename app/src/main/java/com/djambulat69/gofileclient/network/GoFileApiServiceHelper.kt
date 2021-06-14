@@ -6,6 +6,7 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
+import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import retrofit2.Retrofit
 
@@ -16,6 +17,9 @@ class GoFileApiServiceHelper {
             .Builder()
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .client(
+                OkHttpClient().newBuilder().addInterceptor(TokenInterceptor).build()
+            )
             .addConverterFactory(
                 Json {
                     ignoreUnknownKeys = true
