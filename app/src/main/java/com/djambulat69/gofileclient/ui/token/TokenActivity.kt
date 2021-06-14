@@ -73,5 +73,4 @@ class TokenActivity : AppCompatActivity() {
         )
         finish()
     }
-
 }

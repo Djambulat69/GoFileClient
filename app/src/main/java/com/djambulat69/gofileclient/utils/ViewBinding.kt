@@ -58,5 +58,3 @@ fun <VB : ViewBinding> AppCompatActivity.viewBinding(inflateBinding: () -> VB): 
 fun <VB : ViewBinding> Fragment.viewBinding(inflateBinding: () -> VB): ViewBindingFragmentDelegate<VB> {
     return ViewBindingFragmentDelegate(inflateBinding)
 }
-
-
