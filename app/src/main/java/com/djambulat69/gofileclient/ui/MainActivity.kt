@@ -6,16 +6,18 @@ import androidx.fragment.app.Fragment
 import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.ActivityMainBinding
 import com.djambulat69.gofileclient.ui.uploadFile.UploadFileFragment
+import com.djambulat69.gofileclient.utils.viewBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding: ActivityMainBinding get() = _binding!!
+    private val binding: ActivityMainBinding by viewBinding {
+        ActivityMainBinding.inflate(
+            layoutInflater
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         if (savedInstanceState == null) {

@@ -12,12 +12,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val token = getAccountSharedPreferences()
-            .getString(
-                getString(R.string.api_token_pref_key),
-                null
-            )
-
+        val token =
+            getAccountSharedPreferences().getString(getString(R.string.api_token_pref_key), null)
 
         startActivity(
             Intent(
@@ -25,7 +21,6 @@ class SplashActivity : AppCompatActivity() {
                 if (token == null) TokenActivity::class.java else MainActivity::class.java
             )
         )
-
         finish()
     }
 

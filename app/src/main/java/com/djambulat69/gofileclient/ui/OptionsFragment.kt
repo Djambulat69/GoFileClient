@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.djambulat69.gofileclient.R
+import com.djambulat69.gofileclient.databinding.FragmentOptionsBinding
+import com.djambulat69.gofileclient.utils.viewBinding
 
 class OptionsFragment : Fragment() {
+
+    private val binding by viewBinding { FragmentOptionsBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_options, container, false)
+    ): View {
+        return binding.root
     }
 }
