@@ -113,6 +113,26 @@
             app:layout_constraintTop_toBottomOf="@id/total_size_text"
             tools:text="23635" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/details_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="avatar_image,email_text,api_token_text,files_text,folders_text,total_size_text,files_count,folders_count,total_size_count"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/account_details_progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/space_big"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
