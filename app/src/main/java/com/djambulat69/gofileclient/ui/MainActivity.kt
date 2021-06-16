@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val token =
-            getAccountSharedPreferences().getString(getString(R.string.api_token_pref_key), "")
+            getAccountSharedPreferences().getString(getString(R.string.api_token_pref_key), null)
         TokenInterceptor.token = token
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->

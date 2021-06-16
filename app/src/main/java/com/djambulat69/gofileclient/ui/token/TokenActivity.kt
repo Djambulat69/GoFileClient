@@ -1,12 +1,13 @@
 package com.djambulat69.gofileclient.ui.token
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.edit
 import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.ActivityTokenBinding
@@ -30,18 +31,37 @@ class TokenActivity : AppCompatActivity() {
 
         viewModel.accountDetails.observe(this, ::processDetailsData)
 
-        val editText = findViewById<AppCompatEditText>(R.id.token_edit_text)
+        binding.tokenInputLayout.setEndIconOnClickListener {
+            pasteTextFromClipBoard()
+        }
 
-        editText.setOnEditorActionListener { _, actionId, _ ->
+        binding.tokenEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                val enteredToken = editText.text?.toString().orEmpty()
-                TokenInterceptor.token = enteredToken
-                viewModel.getAccountDetails()
+                getAccountDetails()
 
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
+        }
+    }
+
+    private fun getAccountDetails() {
+        val enteredToken = binding.tokenEditText.text?.toString().orEmpty()
+        TokenInterceptor.token = enteredToken
+        viewModel.getAccountDetails()
+    }
+
+    private fun pasteTextFromClipBoard() {
+        val clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        if (
+            clipBoard.hasPrimaryClip()
+            &&
+            clipBoard.primaryClipDescription?.hasMimeType("text/*") == true
+        ) {
+            binding.tokenEditText.setText(clipBoard.primaryClip?.getItemAt(0)?.text)
+
+            getAccountDetails()
         }
     }
 
@@ -55,21 +75,12 @@ class TokenActivity : AppCompatActivity() {
 
     private fun saveDetailsAndStartMainActivity(details: AccountDetails) {
         getAccountSharedPreferences().edit {
-            putString(
-                getString(R.string.api_token_pref_key),
-                details.token
-            )
-            putString(
-                getString(R.string.root_folder_pref_key),
-                details.rootFolder
-            )
+            putString(getString(R.string.api_token_pref_key), details.token)
+            putString(getString(R.string.root_folder_pref_key), details.rootFolder)
         }
 
         startActivity(
-            Intent(
-                this,
-                MainActivity::class.java
-            )
+            Intent(this, MainActivity::class.java)
         )
         finish()
     }
