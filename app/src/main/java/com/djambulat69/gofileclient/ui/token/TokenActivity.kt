@@ -5,21 +5,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.view.isVisible
 import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.ActivityTokenBinding
 import com.djambulat69.gofileclient.network.AccountDetails
-import com.djambulat69.gofileclient.network.TokenInterceptor
 import com.djambulat69.gofileclient.ui.MainActivity
-import com.djambulat69.gofileclient.utils.Data
 import com.djambulat69.gofileclient.utils.getAccountSharedPreferences
-import com.djambulat69.gofileclient.utils.process
 import com.djambulat69.gofileclient.utils.viewBinding
+import io.reactivex.rxjava3.core.Observable
 
-class TokenActivity : AppCompatActivity() {
+class TokenActivity : AppCompatActivity(), TokenView {
 
     private val viewModel: TokenViewModel by viewModels()
 
@@ -29,27 +27,56 @@ class TokenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.accountDetails.observe(this, ::processDetailsData)
+        viewModel.bind(this)
+    }
 
-        binding.tokenInputLayout.setEndIconOnClickListener {
-            pasteTextFromClipBoard()
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.unbind()
+    }
 
-        binding.tokenEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                getAccountDetails()
-
-                return@setOnEditorActionListener true
+    override fun render(state: TokenState) {
+        with(binding) {
+            tokenProgressBar.isVisible = state.isLoading
+            tokenInputLayout.isVisible = !state.isLoading
+            if (state.error == null) {
+                tokenInputLayout.error = null
+            } else {
+                tokenInputLayout.error = getString(R.string.smth_went_wrong)
             }
-            return@setOnEditorActionListener false
         }
     }
 
-    private fun getAccountDetails() {
-        val enteredToken = binding.tokenEditText.text?.toString().orEmpty()
-        TokenInterceptor.token = enteredToken
-        viewModel.getAccountDetails()
+    override fun makeAction(action: TokenAction) {
+        when (action) {
+            is TokenAction.SaveDetailsAndStartMainActivity -> {
+                saveDetailsAndStartMainActivity(action.details)
+            }
+        }
+    }
+
+    override fun loadTokenIntent(): Observable<String> {
+        val actionDoneObservable = Observable.create<String> { emitter ->
+            binding.tokenEditText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                    emitter.onNext(binding.tokenEditText.text?.toString().orEmpty())
+
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
+
+        }
+
+        val endIconObservable = Observable.create<String> { emitter ->
+            binding.tokenInputLayout.setEndIconOnClickListener {
+                pasteTextFromClipBoard()
+                emitter.onNext(binding.tokenEditText.text?.toString().orEmpty())
+            }
+        }
+
+        return Observable.merge(actionDoneObservable, endIconObservable)
     }
 
     private fun pasteTextFromClipBoard() {
@@ -60,17 +87,7 @@ class TokenActivity : AppCompatActivity() {
             clipBoard.primaryClipDescription?.hasMimeType("text/*") == true
         ) {
             binding.tokenEditText.setText(clipBoard.primaryClip?.getItemAt(0)?.text)
-
-            getAccountDetails()
         }
-    }
-
-    private fun processDetailsData(detailsData: Data<AccountDetails>) {
-        detailsData.process(
-            { Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show() },
-            { details -> saveDetailsAndStartMainActivity(details) },
-            { Toast.makeText(this, "Error token", Toast.LENGTH_SHORT).show() }
-        )
     }
 
     private fun saveDetailsAndStartMainActivity(details: AccountDetails) {
