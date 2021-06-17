@@ -8,4 +8,7 @@
     <dimen name="bottom_icon_size">32dp</dimen>
 
     <dimen name="options_item_height">64dp</dimen>
+
+    <dimen name="folder_item_min_height">64dp</dimen>
+    <dimen name="folder_item_icon_size">36dp</dimen>
 </resources>
