@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.ActivityMainBinding
 import com.djambulat69.gofileclient.network.TokenInterceptor
+import com.djambulat69.gofileclient.ui.files.FilesFragment
 import com.djambulat69.gofileclient.ui.uploadFile.UploadFileFragment
 import com.djambulat69.gofileclient.utils.getAccountSharedPreferences
 import com.djambulat69.gofileclient.utils.viewBinding
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.upload_file_menu_item -> openFragment(UploadFileFragment())
-                R.id.options_menu_item -> openFragment(OptionsFragment())
+                R.id.options_menu_item -> openFragment(FilesFragment())
                 else -> throw IllegalStateException("Unknown bottom menu item")
             }
         }
