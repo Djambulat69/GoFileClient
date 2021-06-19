@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.djambulat69.gofileclient.utils
 
 import androidx.fragment.app.Fragment

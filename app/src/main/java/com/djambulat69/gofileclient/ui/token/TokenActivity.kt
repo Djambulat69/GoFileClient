@@ -4,7 +4,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.djambulat69.gofileclient.R
@@ -12,10 +11,11 @@ import com.djambulat69.gofileclient.databinding.ActivityTokenBinding
 import com.djambulat69.gofileclient.ui.MainActivity
 import com.djambulat69.gofileclient.utils.MIME_TYPE_TEXT_ALL
 import com.djambulat69.gofileclient.utils.getAccountSharedPreferences
+import com.djambulat69.gofileclient.utils.viewModelsFactory
 
 class TokenActivity : AppCompatActivity() {
 
-    private val viewModel: TokenViewModel by viewModels()
+    private val viewModel: TokenViewModel by viewModelsFactory()
 
     private val binding by lazy { ActivityTokenBinding.inflate(layoutInflater) }
 
