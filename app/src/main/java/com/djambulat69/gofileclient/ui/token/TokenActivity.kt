@@ -4,20 +4,18 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.core.view.isVisible
 import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.ActivityTokenBinding
 import com.djambulat69.gofileclient.network.AccountDetails
 import com.djambulat69.gofileclient.ui.MainActivity
+import com.djambulat69.gofileclient.utils.MIME_TYPE_TEXT_ALL
 import com.djambulat69.gofileclient.utils.getAccountSharedPreferences
 import com.djambulat69.gofileclient.utils.viewBinding
-import io.reactivex.rxjava3.core.Observable
 
-class TokenActivity : AppCompatActivity(), TokenView {
+class TokenActivity : AppCompatActivity() {
 
     private val viewModel: TokenViewModel by viewModels()
 

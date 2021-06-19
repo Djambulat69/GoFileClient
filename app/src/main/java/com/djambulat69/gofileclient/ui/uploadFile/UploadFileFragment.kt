@@ -1,16 +1,18 @@
 package com.djambulat69.gofileclient.ui.uploadFile
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.FragmentUploadFileBinding
+import com.djambulat69.gofileclient.utils.MIME_TYPE_ALL
 import com.djambulat69.gofileclient.utils.viewBinding
+import com.djambulat69.gofileclient.utils.viewModelsFactory
 
-class UploadFileFragment : Fragment() {
+class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
 
-    private val binding by viewBinding { FragmentUploadFileBinding.inflate(layoutInflater) }
+    private val binding by viewBinding { FragmentUploadFileBinding.bind(requireView()) }
 
     private val presenter: UploadFileViewModel by viewModelsFactory { UploadFileViewModel() }
 
