@@ -27,56 +27,6 @@ class TokenActivity : AppCompatActivity(), TokenView {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.bind(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.unbind()
-    }
-
-    override fun render(state: TokenState) {
-        with(binding) {
-            tokenProgressBar.isVisible = state.isLoading
-            tokenInputLayout.isVisible = !state.isLoading
-            if (state.error == null) {
-                tokenInputLayout.error = null
-            } else {
-                tokenInputLayout.error = getString(R.string.smth_went_wrong)
-            }
-        }
-    }
-
-    override fun makeAction(action: TokenAction) {
-        when (action) {
-            is TokenAction.SaveDetailsAndStartMainActivity -> {
-                saveDetailsAndStartMainActivity(action.details)
-            }
-        }
-    }
-
-    override fun loadTokenIntent(): Observable<String> {
-        val actionDoneObservable = Observable.create<String> { emitter ->
-            binding.tokenEditText.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                    emitter.onNext(binding.tokenEditText.text?.toString().orEmpty())
-
-                    return@setOnEditorActionListener true
-                }
-                return@setOnEditorActionListener false
-            }
-
-        }
-
-        val endIconObservable = Observable.create<String> { emitter ->
-            binding.tokenInputLayout.setEndIconOnClickListener {
-                pasteTextFromClipBoard()
-                emitter.onNext(binding.tokenEditText.text?.toString().orEmpty())
-            }
-        }
-
-        return Observable.merge(actionDoneObservable, endIconObservable)
     }
 
     private fun pasteTextFromClipBoard() {
@@ -84,7 +34,7 @@ class TokenActivity : AppCompatActivity(), TokenView {
         if (
             clipBoard.hasPrimaryClip()
             &&
-            clipBoard.primaryClipDescription?.hasMimeType("text/*") == true
+            clipBoard.primaryClipDescription?.hasMimeType(MIME_TYPE_TEXT_ALL) == true
         ) {
             binding.tokenEditText.setText(clipBoard.primaryClip?.getItemAt(0)?.text)
         }

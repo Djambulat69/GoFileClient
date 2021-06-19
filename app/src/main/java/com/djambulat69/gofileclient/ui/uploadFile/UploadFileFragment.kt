@@ -12,12 +12,17 @@ class UploadFileFragment : Fragment() {
 
     private val binding by viewBinding { FragmentUploadFileBinding.inflate(layoutInflater) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
+    private val presenter: UploadFileViewModel by viewModelsFactory { UploadFileViewModel() }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val getContentLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+
+            }
+
+        binding.uploadFileButton.setOnClickListener { getContentLauncher.launch(MIME_TYPE_ALL) }
     }
 
 }
