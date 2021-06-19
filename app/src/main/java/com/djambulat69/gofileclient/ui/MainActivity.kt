@@ -9,14 +9,11 @@ import com.djambulat69.gofileclient.network.TokenInterceptor
 import com.djambulat69.gofileclient.ui.files.FilesFragment
 import com.djambulat69.gofileclient.ui.uploadFile.UploadFileFragment
 import com.djambulat69.gofileclient.utils.getAccountSharedPreferences
-import com.djambulat69.gofileclient.utils.viewBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding: ActivityMainBinding by viewBinding {
-        ActivityMainBinding.inflate(
-            layoutInflater
-        )
+    private val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
