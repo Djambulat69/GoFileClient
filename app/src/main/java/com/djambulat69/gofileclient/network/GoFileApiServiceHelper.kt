@@ -5,9 +5,11 @@ import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 class GoFileApiServiceHelper {
@@ -18,12 +20,19 @@ class GoFileApiServiceHelper {
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .client(
-                OkHttpClient().newBuilder().addInterceptor(TokenInterceptor).build()
+                OkHttpClient().newBuilder()
+                    .addInterceptor(TokenInterceptor)
+                    .addInterceptor(
+                        HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        }
+                    )
+                    .build()
             )
             .addConverterFactory(
                 Json {
                     ignoreUnknownKeys = true
-                }.asConverterFactory(MediaType.get("application/json"))
+                }.asConverterFactory(("application/json").toMediaType())
             )
             .build()
             .create(GoFileApiService::class.java)
@@ -32,14 +41,11 @@ class GoFileApiServiceHelper {
     fun getServer(): Single<GetServerResponse> = retrofitService.getServer()
 
     fun uploadFile(server: String, bytes: ByteArray, mimeType: String): Single<UploadFileResponse> {
-        val url = BASE_URL.apply {
-            replaceFirst("api", server)
-        } + "uploadFile"
+        val url = BASE_URL.replaceFirst("api", server) + "uploadFile"
 
-        val file = RequestBody.create(
-            MediaType.get(mimeType),
-            bytes
-        )
+        val requestBody = bytes.toRequestBody(mimeType.toMediaType())
+
+        val file = MultipartBody.Part.createFormData("name", "null", requestBody)
 
         return retrofitService.uploadFile(uploadFileUrl = url, file)
     }

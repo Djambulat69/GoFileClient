@@ -2,6 +2,7 @@ package com.djambulat69.gofileclient.network
 
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -14,7 +15,7 @@ interface GoFileApiService {
     @POST
     fun uploadFile(
         @Url uploadFileUrl: String,
-        @Part file: RequestBody
+        @Part file: MultipartBody.Part
     ): Single<UploadFileResponse>
 
     @PUT("createFolder")
