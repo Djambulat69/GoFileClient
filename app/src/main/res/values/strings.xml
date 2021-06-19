@@ -26,4 +26,10 @@
     <string name="files">Files</string>
     <string name="total_size">Total size</string>
 
+    <string name="file_name">File Name</string>
+    <string name="folder_id_hint">Folder id (Leave empty to create new folder)</string>
+    <string name="password">Password</string>
+    <string name="tags">Tags</string>
+    <string name="description">Description</string>
+
 </resources>
