@@ -12,7 +12,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class UploadFileViewModel : ViewModel() {
 
-    private val apiServiceHelper = GoFileApiServiceHelper()
+    private val apiServiceHelper = GoFileApiServiceHelper
 
     private val uploadFileDataSubject = BehaviorSubject.create<UploadFileData>()
     val uploadFileData: Observable<UploadFileData> = uploadFileDataSubject
@@ -24,8 +24,7 @@ class UploadFileViewModel : ViewModel() {
             .flatMap { getServerResponse ->
                 apiServiceHelper.uploadFile(
                     getServerResponse.data.server,
-                    file.bytes,
-                    file.mimeType
+                    file
                 )
             }
             .observeOn(AndroidSchedulers.mainThread())

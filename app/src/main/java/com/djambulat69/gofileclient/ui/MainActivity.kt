@@ -5,16 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.ActivityMainBinding
-import com.djambulat69.gofileclient.network.TokenInterceptor
 import com.djambulat69.gofileclient.ui.files.FilesFragment
 import com.djambulat69.gofileclient.ui.uploadFile.UploadFileFragment
-import com.djambulat69.gofileclient.utils.getAccountSharedPreferences
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding: ActivityMainBinding by lazy {
-        ActivityMainBinding.inflate(layoutInflater)
-    }
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,10 +22,6 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.fragment_container, UploadFileFragment())
                 .commit()
         }
-
-        val token =
-            getAccountSharedPreferences().getString(getString(R.string.api_token_pref_key), null)
-        TokenInterceptor.token = token
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {

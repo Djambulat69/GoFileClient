@@ -2,7 +2,6 @@ package com.djambulat69.gofileclient.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -12,7 +11,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-class GoFileApiServiceHelper {
+object GoFileApiServiceHelper {
+
+    private const val BASE_URL = "https://api.gofile.io/"
+
 
     private val retrofitService =
         Retrofit
@@ -21,18 +23,11 @@ class GoFileApiServiceHelper {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .client(
                 OkHttpClient().newBuilder()
-                    .addInterceptor(TokenInterceptor)
-                    .addInterceptor(
-                        HttpLoggingInterceptor().apply {
-                            level = HttpLoggingInterceptor.Level.BODY
-                        }
-                    )
+                    .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
                     .build()
             )
             .addConverterFactory(
-                Json {
-                    ignoreUnknownKeys = true
-                }.asConverterFactory(("application/json").toMediaType())
+                Json { ignoreUnknownKeys = true }.asConverterFactory(("application/json").toMediaType())
             )
             .build()
             .create(GoFileApiService::class.java)
@@ -40,37 +35,13 @@ class GoFileApiServiceHelper {
 
     fun getServer(): Single<GetServerResponse> = retrofitService.getServer()
 
-    fun uploadFile(server: String, bytes: ByteArray, mimeType: String): Single<UploadFileResponse> {
+    fun uploadFile(server: String, fileToUpload: FileToUpload): Single<UploadFileResponse> {
         val url = BASE_URL.replaceFirst("api", server) + "uploadFile"
 
-        val requestBody = bytes.toRequestBody(mimeType.toMediaType())
+        val requestBody = fileToUpload.bytes.toRequestBody(fileToUpload.mimeType.toMediaType())
 
-        val file = MultipartBody.Part.createFormData("name", "null", requestBody)
+        val file = MultipartBody.Part.createFormData("file", fileToUpload.fileName, requestBody)
 
         return retrofitService.uploadFile(uploadFileUrl = url, file)
-    }
-
-    fun createFolder(parentFolderId: Int, folderName: String): Completable =
-        retrofitService.createFolder(parentFolderId, folderName)
-
-    fun setFolderOptions(
-        folderId: Int,
-        option: String,
-        value: String
-    ): Completable = retrofitService.setFolderOptions(folderId, option, value)
-
-    fun deleteFolder(
-        folderId: Int
-    ): Completable = retrofitService.deleteFolder(folderId)
-
-    fun deleteFile(
-        fileId: Int
-    ): Completable = retrofitService.deleteFile(fileId)
-
-    fun getAccountDetails(): Single<GetAccountDetailsResponse> =
-        retrofitService.getAccountDetails()
-
-    companion object {
-        private const val BASE_URL = "https://api.gofile.io/"
     }
 }

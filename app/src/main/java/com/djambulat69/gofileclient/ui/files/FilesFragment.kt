@@ -9,9 +9,7 @@ import com.djambulat69.gofileclient.utils.viewBinding
 
 class FilesFragment : Fragment(R.layout.fragment_files) {
 
-    private val binding: FragmentFilesBinding by viewBinding {
-        FragmentFilesBinding.bind(requireView())
-    }
+    private val binding: FragmentFilesBinding by viewBinding { FragmentFilesBinding.bind(requireView()) }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
