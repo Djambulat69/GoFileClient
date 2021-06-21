@@ -4,6 +4,8 @@ plugins {
     id 'kotlinx-serialization'
 }
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 30
 
@@ -57,4 +59,9 @@ dependencies {
     // Rx
     implementation "io.reactivex.rxjava3:rxjava:3.0.11"
     implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
+    // Room
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava3:$room_version"
 }

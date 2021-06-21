@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.djambulat69.gofileclient.R
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 
 const val MIME_TYPE_ALL = "*/*"
 const val MIME_TYPE_TEXT_ALL = "text/*"
@@ -56,4 +58,14 @@ fun Context.toast(text: CharSequence) {
 
 fun View.snackBar(text: CharSequence) {
     Snackbar.make(this, text, Snackbar.LENGTH_SHORT).show()
+}
+
+fun Disposable.dispatchTo(compositeDisposable: CompositeDisposable) {
+    compositeDisposable.add(this)
+}
+
+fun CompositeDisposable.disposeSafe() {
+    if (!this.isDisposed) {
+        dispose()
+    }
 }
