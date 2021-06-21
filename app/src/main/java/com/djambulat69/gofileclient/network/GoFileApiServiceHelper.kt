@@ -35,7 +35,10 @@ object GoFileApiServiceHelper {
 
     fun getServer(): Single<GetServerResponse> = retrofitService.getServer()
 
-    fun uploadFile(server: String, fileToUpload: FileToUpload): Single<UploadFileResponse> {
+    fun uploadFile(
+        server: String,
+        fileToUpload: FileToUpload,
+    ): Single<UploadFileResponse> {
         val url = BASE_URL.replaceFirst("api", server) + "uploadFile"
 
         val requestBody = fileToUpload.bytes.toRequestBody(fileToUpload.mimeType.toMediaType())

@@ -2,16 +2,11 @@ package com.djambulat69.gofileclient.utils
 
 import android.content.ContentResolver
 import android.content.Context
-import android.content.SharedPreferences
 import android.net.Uri
-import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import com.djambulat69.gofileclient.R
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -19,12 +14,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 const val MIME_TYPE_ALL = "*/*"
 const val MIME_TYPE_TEXT_ALL = "text/*"
 
-fun Context.getAccountSharedPreferences(): SharedPreferences {
-    return getSharedPreferences(
-        getString(R.string.account_shared_preferences_name),
-        Context.MODE_PRIVATE
-    )
-}
+const val UPLOAD_FILE_SIZE_LIMIT_BYTES = 26_214_400
 
 fun ContentResolver.queryName(uri: Uri): String? {
     return query(uri, null, null, null, null)?.use { cursor ->
@@ -36,20 +26,14 @@ fun ContentResolver.queryName(uri: Uri): String? {
     }
 }
 
-fun EditText.setActionListener(targetActionId: Int, callback: (String) -> Unit) {
-    setOnEditorActionListener { _, actionId, _ ->
-        if (actionId == targetActionId) {
-            callback(text.toString())
-        }
-        return@setOnEditorActionListener false
-    }
-}
+fun ContentResolver.querySize(uri: Uri): Int {
+    return query(uri, null, null, null, null)?.use { cursor ->
+        val sizeColumn = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE)
 
-fun Fragment.setChildFragmentResultListener(
-    requestKey: String,
-    listener: ((requestKey: String, bundle: Bundle) -> Unit)
-) {
-    childFragmentManager.setFragmentResultListener(requestKey, this, listener)
+        cursor.moveToFirst()
+
+        return@use cursor.getInt(sizeColumn)
+    } ?: 0
 }
 
 fun Context.toast(text: CharSequence) {

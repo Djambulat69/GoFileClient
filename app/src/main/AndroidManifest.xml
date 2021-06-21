@@ -3,6 +3,7 @@
     package="com.djambulat69.gofileclient">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".GoFileApp"
@@ -19,6 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".ui.uploadFile.UploadFileService" />
     </application>
 
 </manifest>
