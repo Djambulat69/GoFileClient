@@ -19,6 +19,11 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.SEND" />
+                <data android:mimeType="@string/mime_type_all" />
+            </intent-filter>
         </activity>
 
         <service android:name=".ui.uploadFile.UploadFileService" />

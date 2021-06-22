@@ -6,9 +6,6 @@ import io.reactivex.rxjava3.core.Single
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 object GoFileApiServiceHelper {
@@ -21,11 +18,6 @@ object GoFileApiServiceHelper {
             .Builder()
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .client(
-                OkHttpClient().newBuilder()
-                    .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
-                    .build()
-            )
             .addConverterFactory(
                 Json { ignoreUnknownKeys = true }.asConverterFactory(("application/json").toMediaType())
             )
@@ -41,7 +33,7 @@ object GoFileApiServiceHelper {
     ): Single<UploadFileResponse> {
         val url = BASE_URL.replaceFirst("api", server) + "uploadFile"
 
-        val requestBody = fileToUpload.bytes.toRequestBody(fileToUpload.mimeType.toMediaType())
+        val requestBody = InputStreamRequestBody(fileToUpload.mimeType.toMediaType(), fileToUpload.inputStream)
 
         val file = MultipartBody.Part.createFormData("file", fileToUpload.fileName, requestBody)
 

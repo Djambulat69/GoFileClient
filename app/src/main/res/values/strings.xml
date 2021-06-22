@@ -4,33 +4,17 @@
     <string name="uploading_files">Uploading files</string>
 
     <string name="smth_went_wrong">Something went wrong</string>
-    <string name="retry">Retry</string>
 
     <string name="upload_file">Upload file</string>
     <string name="options">Options</string>
 
-    <string name="account_details">Account details</string>
-    <string name="my_files">My files</string>
-    <string name="donate">Donate</string>
-    <string name="contact">Contact</string>
-
-    <string name="enter_api_token">Enter API token</string>
-    <string name="api_token_prefix">API token: %s</string>
-
-    <string name="folders">Folders</string>
-    <string name="files">Files</string>
-    <string name="total_size">Total size</string>
-
-    <string name="file_name">File Name</string>
-    <string name="folder_id_hint">Folder id (Leave empty to create new folder)</string>
-    <string name="password">Password</string>
-    <string name="tags">Tags</string>
-    <string name="description">Description</string>
-
     <string name="too_big_file">File is too big (limit = 25MB)</string>
-    <string name="uploading_file">Uploading %s</string>
+    <string name="uploading_file_with_name">Uploading %s</string>
+    <string name="uploading_file">Uploading file</string>
     <string name="finished_uploading">"Your file [%s] just finished uploading!"</string>
     <string name="link">Link: %s</string>
     <string name="try_again_later">Try again later</string>
+
+    <string name="mime_type_all">*/*</string>
 
 </resources>

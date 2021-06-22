@@ -12,7 +12,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 
 const val MIME_TYPE_ALL = "*/*"
-const val MIME_TYPE_TEXT_ALL = "text/*"
 
 const val UPLOAD_FILE_SIZE_LIMIT_BYTES = 26_214_400
 

@@ -18,19 +18,26 @@ object GoFileNotificationManager {
     }
 
     fun buildUploadingFileNotification(context: Context, fileName: String): Notification {
+        val contentText = context.getString(R.string.uploading_file_with_name, fileName)
+
         return NotificationCompat.Builder(context, UPLOADING_FILES_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_baseline_file_24)
-            .setContentTitle(context.getString(R.string.uploading_file, fileName))
+            .setContentTitle(context.getString(R.string.uploading_file))
+            .setContentText(contentText)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(contentText))
             .setProgress(0, 0, true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
     }
 
     fun buildFinishedUploadingNotification(context: Context, fileName: String, link: String): Notification {
+        val contentText = context.getString(R.string.link, link)
+
         return NotificationCompat.Builder(context, UPLOADING_FILES_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_baseline_file_24)
             .setContentTitle(context.getString(R.string.finished_uploading, fileName))
-            .setContentText(context.getString(R.string.link, link))
+            .setContentText(contentText)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(contentText))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
     }

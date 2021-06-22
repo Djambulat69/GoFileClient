@@ -48,13 +48,11 @@ class UploadFileService : Service() {
     }
 
     private fun uploadSuccess(file: UploadFileData) {
-        stopForeground(true)
         notifySuccess(file)
         stopSelf()
     }
 
     private fun uploadError(e: Throwable) {
-        stopForeground(true)
         notifyError(e.hashCode())
         stopSelf()
     }
@@ -65,34 +63,30 @@ class UploadFileService : Service() {
             .subscribeOn(Schedulers.io())
             .flatMap { getServerResponse ->
                 Single.fromCallable {
-                    FileToUpload(
-                        fileName = contentResolver.queryName(uri).orEmpty(),
-                        mimeType = contentResolver.getType(uri).orEmpty(),
-                        bytes = contentResolver.openInputStream(uri).use { it?.readBytes() }!!,
-                        server = getServerResponse.data.server
-                    )
+                    with(contentResolver) {
+                        FileToUpload(
+                            fileName = queryName(uri).orEmpty(),
+                            inputStream = openInputStream(uri),
+                            mimeType = getType(uri).orEmpty(),
+                            server = getServerResponse.data.server,
+                        )
+                    }
                 }
             }
             .flatMap { fileToUpload ->
-                apiServiceHelper.uploadFile(
-                    fileToUpload.server,
-                    fileToUpload
-                )
+                apiServiceHelper.uploadFile(fileToUpload.server, fileToUpload)
             }
             .flatMap { fileResponse ->
                 filesDao.save(fileResponse.data).andThen(Single.just(fileResponse))
             }
             .observeOn(AndroidSchedulers.mainThread())
+            .doFinally { stopForeground(true) }
             .subscribe(
                 { fileResponse -> uploadSuccess(fileResponse.data) },
                 { e -> Log.d("tag", e.stackTraceToString()); uploadError(e) }
             )
             .dispatchTo(disposable)
 
-    }
-
-    companion object {
-        const val FILE_URI_EXTRA = "file uri extra"
     }
 
     private fun notifySuccess(file: UploadFileData) {
@@ -107,6 +101,10 @@ class UploadFileService : Service() {
             id,
             GoFileNotificationManager.buildUploadingErrorNotification(this)
         )
+    }
+
+    companion object {
+        const val FILE_URI_EXTRA = "file uri extra"
     }
 
 }

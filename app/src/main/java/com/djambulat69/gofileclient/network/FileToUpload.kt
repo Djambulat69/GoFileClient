@@ -1,8 +1,10 @@
 package com.djambulat69.gofileclient.network
 
+import java.io.InputStream
+
 class FileToUpload(
     val fileName: String,
-    val bytes: ByteArray,
+    val inputStream: InputStream?,
     val mimeType: String,
-    val server: String
+    val server: String,
 )

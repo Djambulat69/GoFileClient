@@ -2,13 +2,9 @@
 <resources>
     <dimen name="space_small">4dp</dimen>
     <dimen name="space_medium">8dp</dimen>
-    <dimen name="space_big">16dp</dimen>
 
     <dimen name="bottom_navigation_height">64dp</dimen>
     <dimen name="bottom_icon_size">32dp</dimen>
 
-    <dimen name="options_item_height">64dp</dimen>
-
     <dimen name="folder_item_min_height">64dp</dimen>
-    <dimen name="folder_item_icon_size">36dp</dimen>
 </resources>
