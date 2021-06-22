@@ -19,4 +19,6 @@
     <string name="mime_type_all">application/*</string>
     <string name="mime_type_text">text/plain</string>
 
+    <string name="check_network">Check network connection.</string>
+
 </resources>

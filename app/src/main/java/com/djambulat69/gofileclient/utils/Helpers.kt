@@ -38,10 +38,6 @@ fun Context.toast(text: CharSequence) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
 
-fun View.snackBar(text: CharSequence) {
-    Snackbar.make(this, text, Snackbar.LENGTH_SHORT).show()
-}
-
 fun Disposable.dispatchTo(compositeDisposable: CompositeDisposable) {
     compositeDisposable.add(this)
 }

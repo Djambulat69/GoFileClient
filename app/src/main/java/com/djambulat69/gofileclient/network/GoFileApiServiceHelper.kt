@@ -31,7 +31,6 @@ object GoFileApiServiceHelper {
         server: String,
         fileToUpload: FileToUpload,
     ): Single<UploadFileResponse> {
-
         val url = constructUploadFileUrl(server)
 
         val requestBody = InputStreamRequestBody(fileToUpload.mimeType.toMediaType(), fileToUpload.inputStream)
@@ -41,11 +40,7 @@ object GoFileApiServiceHelper {
         return retrofitService.uploadFile(uploadFileUrl = url, file)
     }
 
-    private fun constructUploadFileUrl(server: String): String = buildString {
-        append(BASE_URL)
-        replaceFirst(Regex("api"), server)
-        append("uploadFile")
+    private fun constructUploadFileUrl(server: String): String {
+        return BASE_URL.replaceFirst("api", server) + "uploadFile"
     }
-
-
 }

@@ -8,6 +8,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.djambulat69.gofileclient.R
 import com.djambulat69.gofileclient.databinding.FragmentUploadFileBinding
+import com.djambulat69.gofileclient.network.NetworkManager
+import com.djambulat69.gofileclient.utils.toast
 import com.djambulat69.gofileclient.utils.viewBinding
 
 class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
@@ -25,8 +27,14 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         val sendIntent = requireActivity().intent
 
         sendIntent.extras?.getParcelable<Uri>(Intent.EXTRA_STREAM)?.let {
-            uploadFile(it)
-            sendIntent.removeExtra(Intent.EXTRA_STREAM)
+
+            if (NetworkManager.isConnected(requireContext())) {
+                uploadFile(it)
+                sendIntent.removeExtra(Intent.EXTRA_STREAM)
+            } else {
+                checkNetworkToast()
+            }
+
         }
     }
 
@@ -38,11 +46,19 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         }
 
     private fun uploadFile(uri: Uri) {
-        requireContext().startService(
-            Intent(requireContext(), UploadFileService::class.java).apply {
-                putExtra(UploadFileService.FILE_URI_EXTRA, uri)
-            }
-        )
+        if (NetworkManager.isConnected(requireContext())) {
+            requireContext().startService(
+                Intent(requireContext(), UploadFileService::class.java).apply {
+                    putExtra(UploadFileService.FILE_URI_EXTRA, uri)
+                }
+            )
+        } else {
+            checkNetworkToast()
+        }
+    }
+
+    private fun checkNetworkToast() {
+        requireContext().toast(getString(R.string.check_network))
     }
 
 }
