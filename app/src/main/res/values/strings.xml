@@ -14,7 +14,9 @@
     <string name="finished_uploading">"Your file [%s] just finished uploading!"</string>
     <string name="link">Link: %s</string>
     <string name="try_again_later">Try again later</string>
+    <string name="share_chooser_title">Share link</string>
 
-    <string name="mime_type_all">*/*</string>
+    <string name="mime_type_all">application/*</string>
+    <string name="mime_type_text">text/plain</string>
 
 </resources>

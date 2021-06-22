@@ -7,13 +7,12 @@ import android.provider.OpenableColumns
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 
-const val MIME_TYPE_ALL = "*/*"
 
-const val UPLOAD_FILE_SIZE_LIMIT_BYTES = 26_214_400
 
 fun ContentResolver.queryName(uri: Uri): String? {
     return query(uri, null, null, null, null)?.use { cursor ->
@@ -52,3 +51,5 @@ fun CompositeDisposable.disposeSafe() {
         dispose()
     }
 }
+
+val RecyclerView.ViewHolder.context: Context get() = itemView.context
