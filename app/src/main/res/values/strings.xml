@@ -8,7 +8,6 @@
     <string name="upload_file">Upload file</string>
     <string name="my_files">My files</string>
 
-    <string name="too_big_file">File is too big (limit = 25MB)</string>
     <string name="uploading_file_with_name">Uploading %s</string>
     <string name="uploading_file">Uploading file</string>
     <string name="finished_uploading">"Your file [%s] just finished uploading!"</string>
