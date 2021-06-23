@@ -2,6 +2,7 @@
 
 Screenshots:
 ------------
+<img src= "screenshots/go_file_upload_file.jpg" height=30% width=30% title="Upload file"/> <img src= "screenshots/go_file_my_files.jpg" height=30% width=30% title="My files"/> <img src= "screenshots/go_file_uploading_notif.jpg" height=30% width=30% title="Uploading notification"/> <img src= "screenshots/go_file_finish_notif.jpg" height=30% width=30% title="Finish notification"/>
 
 In this project:
 ----------------
