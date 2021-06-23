@@ -6,7 +6,7 @@
     <string name="smth_went_wrong">Something went wrong</string>
 
     <string name="upload_file">Upload file</string>
-    <string name="options">Options</string>
+    <string name="my_files">My files</string>
 
     <string name="too_big_file">File is too big (limit = 25MB)</string>
     <string name="uploading_file_with_name">Uploading %s</string>
@@ -16,7 +16,7 @@
     <string name="try_again_later">Try again later</string>
     <string name="share_chooser_title">Share link</string>
 
-    <string name="mime_type_all">application/*</string>
+    <string name="mime_type_all">*/*</string>
     <string name="mime_type_text">text/plain</string>
 
     <string name="check_network">Check network connection.</string>

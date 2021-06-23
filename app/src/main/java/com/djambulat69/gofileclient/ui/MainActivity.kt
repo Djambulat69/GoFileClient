@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.upload_file_menu_item -> openFragment(UploadFileFragment())
-                R.id.options_menu_item -> openFragment(FilesFragment())
+                R.id.my_files_menu_item -> openFragment(FilesFragment())
                 else -> throw IllegalStateException("Unknown bottom menu item")
             }
         }

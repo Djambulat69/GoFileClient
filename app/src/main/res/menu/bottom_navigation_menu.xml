@@ -6,7 +6,7 @@
         android:icon="@drawable/ic_baseline_upload_file_24"
         android:title="@string/upload_file" />
     <item
-        android:id="@+id/options_menu_item"
+        android:id="@+id/my_files_menu_item"
         android:icon="@drawable/ic_baseline_segment_24"
-        android:title="@string/options" />
+        android:title="@string/my_files" />
 </menu>

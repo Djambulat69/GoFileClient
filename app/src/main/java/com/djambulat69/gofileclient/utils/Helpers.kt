@@ -24,16 +24,6 @@ fun ContentResolver.queryName(uri: Uri): String? {
     }
 }
 
-fun ContentResolver.querySize(uri: Uri): Int {
-    return query(uri, null, null, null, null)?.use { cursor ->
-        val sizeColumn = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE)
-
-        cursor.moveToFirst()
-
-        return@use cursor.getInt(sizeColumn)
-    } ?: 0
-}
-
 fun Context.toast(text: CharSequence) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
