@@ -4,14 +4,11 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
-
 
 
 fun ContentResolver.queryName(uri: Uri): String? {
@@ -21,6 +18,14 @@ fun ContentResolver.queryName(uri: Uri): String? {
         cursor.moveToFirst()
 
         return@use cursor.getString(nameColumn)
+    }
+}
+
+fun ContentResolver.querySize(uri: Uri): Int? {
+    return query(uri, null, null, null, null)?.use { cursor ->
+        val sizeColumn = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE)
+        cursor.moveToFirst()
+        return@use cursor.getInt(sizeColumn)
     }
 }
 
@@ -39,3 +44,5 @@ fun CompositeDisposable.disposeSafe() {
 }
 
 val RecyclerView.ViewHolder.context: Context get() = itemView.context
+
+data class Progress(val current: Int, val max: Int)

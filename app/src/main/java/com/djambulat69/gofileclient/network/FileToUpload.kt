@@ -7,4 +7,5 @@ class FileToUpload(
     val inputStream: InputStream?,
     val mimeType: String,
     val server: String,
+    val size: Int
 )

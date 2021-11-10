@@ -9,15 +9,14 @@ import androidx.core.app.NotificationManagerCompat
 import com.djambulat69.gofileclient.db.FilesDatabase
 import com.djambulat69.gofileclient.network.FileToUpload
 import com.djambulat69.gofileclient.network.GoFileApiServiceHelper
-import com.djambulat69.gofileclient.network.UploadFileData
 import com.djambulat69.gofileclient.ui.GoFileNotificationManager
-import com.djambulat69.gofileclient.utils.dispatchTo
-import com.djambulat69.gofileclient.utils.disposeSafe
-import com.djambulat69.gofileclient.utils.queryName
+import com.djambulat69.gofileclient.utils.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class UploadFileService : Service() {
 
@@ -34,10 +33,14 @@ class UploadFileService : Service() {
         val fileName = contentResolver.queryName(fileUri).orEmpty()
 
         startForeground(
-            fileUri.hashCode(),
-            GoFileNotificationManager.buildUploadingFileNotification(this, fileName)
+            startId,
+            GoFileNotificationManager.buildUploadingFileNotification(applicationContext, fileName)
         )
-        uploadFile(fileUri)
+
+        val progressSubject = PublishSubject.create<Progress>()
+        uploadFile(fileUri, progressSubject)
+
+        listenUploadProgress(progressSubject, startId, fileName)
 
         return START_NOT_STICKY
     }
@@ -47,17 +50,7 @@ class UploadFileService : Service() {
         super.onDestroy()
     }
 
-    private fun uploadSuccess(file: UploadFileData) {
-        notifySuccess(file)
-        stopSelf()
-    }
-
-    private fun uploadError(e: Throwable) {
-        notifyError(e.hashCode())
-        stopSelf()
-    }
-
-    private fun uploadFile(uri: Uri) {
+    private fun uploadFile(uri: Uri, progressSubject: PublishSubject<Progress>) {
 
         apiServiceHelper.getServer()
             .subscribeOn(Schedulers.io())
@@ -69,42 +62,45 @@ class UploadFileService : Service() {
                             inputStream = openInputStream(uri),
                             mimeType = getType(uri).orEmpty(),
                             server = getServerResponse.data.server,
+                            size = querySize(uri) ?: NO_SIZE
                         )
                     }
                 }
             }
             .flatMap { fileToUpload ->
-                apiServiceHelper.uploadFile(fileToUpload.server, fileToUpload)
+                apiServiceHelper.uploadFile(fileToUpload.server, fileToUpload, progressSubject)
             }
             .flatMap { fileResponse ->
                 filesDao.save(fileResponse.data).andThen(Single.just(fileResponse))
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .doFinally { stopForeground(true) }
+            .doFinally {
+                progressSubject.onComplete()
+                stopForeground(true)
+                stopSelf()
+            }
             .subscribe(
-                { fileResponse -> uploadSuccess(fileResponse.data) },
-                { e -> Log.d("tag", e.stackTraceToString()); uploadError(e) }
+                { fileResponse -> },
+                { e -> Log.d("tag", e.stackTraceToString()) }
             )
             .dispatchTo(disposable)
-
     }
 
-    private fun notifySuccess(file: UploadFileData) {
-        NotificationManagerCompat.from(this).notify(
-            file.hashCode(),
-            GoFileNotificationManager.buildFinishedUploadingNotification(this, file.fileName, file.directLink)
-        )
-    }
-
-    private fun notifyError(id: Int) {
-        NotificationManagerCompat.from(this).notify(
-            id,
-            GoFileNotificationManager.buildUploadingErrorNotification(this)
-        )
+    private fun listenUploadProgress(progressObservable: Observable<Progress>, id: Int, fileName: String) {
+        progressObservable
+            .subscribeOn(Schedulers.single())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { progress ->
+                NotificationManagerCompat.from(applicationContext).notify(
+                    id, GoFileNotificationManager.buildUploadingFileNotification(applicationContext, fileName, progress)
+                )
+            }
+            .dispatchTo(disposable)
     }
 
     companion object {
         const val FILE_URI_EXTRA = "file uri extra"
+        const val NO_SIZE = -1
     }
 
 }
