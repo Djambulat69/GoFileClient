@@ -15,6 +15,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.internal.functions.Functions
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.PublishSubject
 
@@ -51,27 +52,22 @@ class UploadFileService : Service() {
     }
 
     private fun uploadFile(uri: Uri, progressSubject: PublishSubject<Progress>) {
-
-        apiServiceHelper.getServer()
+        Single.fromCallable {
+            with(contentResolver) {
+                FileToUpload(
+                    fileName = queryName(uri).orEmpty(),
+                    inputStream = openInputStream(uri),
+                    mimeType = getType(uri).orEmpty(),
+                    size = querySize(uri) ?: NO_SIZE
+                )
+            }
+        }
             .subscribeOn(Schedulers.io())
-            .flatMap { getServerResponse ->
-                Single.fromCallable {
-                    with(contentResolver) {
-                        FileToUpload(
-                            fileName = queryName(uri).orEmpty(),
-                            inputStream = openInputStream(uri),
-                            mimeType = getType(uri).orEmpty(),
-                            server = getServerResponse.data.server,
-                            size = querySize(uri) ?: NO_SIZE
-                        )
-                    }
-                }
-            }
             .flatMap { fileToUpload ->
-                apiServiceHelper.uploadFile(fileToUpload.server, fileToUpload, progressSubject)
+                apiServiceHelper.uploadFile(fileToUpload, progressSubject)
             }
-            .flatMap { fileResponse ->
-                filesDao.save(fileResponse.data).andThen(Single.just(fileResponse))
+            .flatMapCompletable { fileResponse ->
+                filesDao.save(fileResponse.data)
             }
             .observeOn(AndroidSchedulers.mainThread())
             .doFinally {
@@ -80,7 +76,7 @@ class UploadFileService : Service() {
                 stopSelf()
             }
             .subscribe(
-                { fileResponse -> },
+                Functions.EMPTY_ACTION,
                 { e -> Log.d("tag", e.stackTraceToString()) }
             )
             .dispatchTo(disposable)
@@ -102,5 +98,4 @@ class UploadFileService : Service() {
         const val FILE_URI_EXTRA = "file uri extra"
         const val NO_SIZE = -1
     }
-
 }

@@ -15,26 +15,24 @@ object GoFileApiServiceHelper {
     private const val BASE_URL = "https://api.gofile.io/"
 
 
+    private val json: Json = Json { ignoreUnknownKeys = true }
+
     private val retrofitService =
         Retrofit
             .Builder()
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(
-                Json { ignoreUnknownKeys = true }.asConverterFactory(("application/json").toMediaType())
+                json.asConverterFactory(("application/json").toMediaType())
             )
             .build()
             .create(GoFileApiService::class.java)
 
 
-    fun getServer(): Single<GetServerResponse> = retrofitService.getServer()
-
     fun uploadFile(
-        server: String,
         fileToUpload: FileToUpload,
         progressSub: PublishSubject<Progress>
     ): Single<UploadFileResponse> {
-        val url = constructUploadFileUrl(server)
 
         val requestBody = InputStreamRequestBody(
             fileToUpload.mimeType.toMediaType(),
@@ -45,8 +43,13 @@ object GoFileApiServiceHelper {
 
         val file = MultipartBody.Part.createFormData("file", fileToUpload.fileName, requestBody)
 
-        return retrofitService.uploadFile(uploadFileUrl = url, file)
+        return getServer().flatMap { serverResponse ->
+            val fileUrl = constructUploadFileUrl(serverResponse.data.server)
+            retrofitService.uploadFile(fileUrl, file)
+        }
     }
+
+    private fun getServer(): Single<GetServerResponse> = retrofitService.getServer()
 
     private fun constructUploadFileUrl(server: String): String {
         return BASE_URL.replaceFirst("api", server) + "uploadFile"
